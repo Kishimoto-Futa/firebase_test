@@ -69,6 +69,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Map<String, dynamic>.from(snapshot.snapshot.value as Map);
           _userName = userData['name']; // 既存のユーザー名を取得
         }
+        final snackBar = SnackBar(content: Text('ログインしました'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
       setState(() {}); // ステートを更新してUIを再描画
     } catch (e) {
@@ -81,6 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _logout() async {
     await _auth.signOut(); // Firebaseからサインアウト
     await GoogleSignIn().signOut(); // Googleからもサインアウト
+    final snackBar = SnackBar(content: Text('ログアウトしました'));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
     setState(() {
       _user = null; // ステートをリセット
       _userName = null; // ユーザー名もリセット
