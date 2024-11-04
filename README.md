@@ -1,16 +1,14 @@
-# firebase_test
-
-firebaseのテスト
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Firebase Authのテスト
+Discordに添付したファイルを以下のフォルダに配置してください。  
+- firebase_options.dart→firebase_test/lib
+- google-services.json→firebase_test/android/app(Androidのみ)
+- GoogleService-Info.plist→firebase_test/ios/Runner(iosのみ)  
+---
+以下のコマンドを実行してください。
+```bash
+flutter pub get
+```
+---
+ログイン情報
+- ユーザー名（重複×）
+- パスワード（8文字以上）
