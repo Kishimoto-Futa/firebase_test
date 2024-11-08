@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -9,6 +10,9 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen> {
   // Firebase Authenticationインスタンス
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  // Firestoreのusersリファレンス
+  final CollectionReference _usersRef =
+      FirebaseFirestore.instance.collection('users');
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -51,18 +55,31 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       // ユーザー名変更
       await userCredential.user?.updateDisplayName(username);
 
+      // Firestoreにユーザー登録
+      await _usersRef
+          .doc(userCredential.user?.uid)
+          .set({'icon': '', 'username': username});
+
       // メイン画面にtrueを送信
       Navigator.pop(context, true);
-    } on FirebaseAuthException catch (e) {
-      String errMsg = '';
-      if (e.code == 'email-already-in-use') {
-        errMsg = 'このユーザー名は既に使用されています';
-      } else {
-        errMsg = e.message as String;
+    } catch (e) {
+      String errMsg = e.toString();
+      if (e is FirebaseAuthException) {
+        if (e.code == 'email-already-in-use') {
+          errMsg = 'このユーザー名は既に使用されています';
+        } else {
+          errMsg = e.message as String;
+        }
+      } else if (e is FirebaseException) {
+        if (e.code == 'permission-denied') {
+          errMsg = 'データベースに書き込む権限がありません';
+        } else if (e.code == 'network-request-failed') {
+          errMsg = 'ネットワークに接続されていません';
+        } else {
+          errMsg = e.message as String;
+        }
       }
       showSnackBar(errMsg);
-    } catch (e) {
-      showSnackBar(e.toString());
     }
   }
 
